@@ -12,42 +12,60 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _numeros = '';
+  List<String> _expressao = ['']; // Armazena em forma de lista a expressao matematica inserida
+  String _display = ''; // String responsavel por mostrar a expressao matematica inserida na tela
+  double? result; //armazena resultado da exprecao e PODE RECEBER NULO
+  int i = 0; // Indice usado para navegar na lista _expressao
 
-  void _display(String input) {
+  // Esta funcao trabalha com as entradas do teclado da calculadora
+  void _keyboard(String input) {
     switch (input) {
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9':
-      case '0':
-        _numeros += input;
-        setState(() {
-          if (_numeros.contains('.')) {
-            double num = double.parse(_numeros);
-            _numeros = num.toString();
-          } else {
-            int num = int.parse(_numeros);
-            _numeros = num.toString();
-          }
-        });
-        break;
       case '.':
         setState(() {
-          _numeros += '.';
+          if(_expressao[i].contains('.')) return;
+          if(_expressao[i].compareTo('') == 0) {
+            _expressao[i] += '0';
+          }
+          _expressao[i] += '.';
         });
         break;
       case 'C':
         setState(() {
-          _numeros = '';
+          _expressao = [''];
+          i = 0;
         });
         break;
+      case '+':
+      case '-':
+      case 'x':
+      case '/':
+        setState(() {
+          if(_expressao[i].compareTo('') == 0) return;
+          _expressao.add(input);
+          _expressao.add('');
+          i += 2;
+        });
+        break;
+
+      default:
+        setState(() {
+          _expressao[i] += input;
+          if (!_expressao[i].contains('.')) {
+            int num = int.parse(_expressao[i]);
+            _expressao[i] = num.toString();
+          }
+        });
     }
+
+    // Trata a string a ser exibida no display da calculadora removendo os espacos em branco, os [] e as ,
+    _display = _expressao.toString();
+    _display = _display.replaceAll(RegExp(r'[\[\],\s]'), '');
+
+  }
+
+  void _calcular() {
+    // 12+3-5*2
+    print(_expressao);
   }
 
   @override
@@ -58,8 +76,8 @@ class _MyAppState extends State<MyApp> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
-            _numeros,
-            style: TextStyle(fontSize: 65),
+            _display,
+            style: const TextStyle(fontSize: 65),
             textAlign: TextAlign.right,
           ),
           Text('Barrinha de opções'),
@@ -67,7 +85,7 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
-                onTap: () => _display('C'),
+                onTap: () => _keyboard('C'),
                 child: const Text(
                   'C',
                   style: TextStyle(fontSize: 25),
@@ -81,9 +99,12 @@ class _MyAppState extends State<MyApp> {
                 '%',
                 style: TextStyle(fontSize: 25),
               ),
-              Text(
-                'DIVIDIR',
-                style: TextStyle(fontSize: 25),
+              GestureDetector(
+                onTap: () => _keyboard('/'),
+                child: const Text(
+                  'DIVIDIR',
+                  style: TextStyle(fontSize: 25),
+                ),
               )
             ],
           ),
@@ -91,29 +112,32 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
-                onTap: () => _display('7'),
+                onTap: () => _keyboard('7'),
                 child: const Text(
                   '7',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('8'),
+                onTap: () => _keyboard('8'),
                 child: const Text(
                   '8',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('9'),
+                onTap: () => _keyboard('9'),
                 child: const Text(
                   '9',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
-              Text(
-                'X',
-                style: TextStyle(fontSize: 25),
+              GestureDetector(
+                onTap: () => _keyboard('x'),
+                child: const Text(
+                  'X',
+                  style: TextStyle(fontSize: 25),
+                ),
               )
             ],
           ),
@@ -121,29 +145,32 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
-                onTap: () => _display('4'),
+                onTap: () => _keyboard('4'),
                 child: const Text(
                   '4',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('5'),
+                onTap: () => _keyboard('5'),
                 child: const Text(
                   '5',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('6'),
+                onTap: () => _keyboard('6'),
                 child: const Text(
                   '6',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
-              Text(
-                '-',
-                style: TextStyle(fontSize: 25),
+              GestureDetector(
+                onTap: () => _keyboard('-'),
+                child: const Text(
+                  '-',
+                  style: TextStyle(fontSize: 25),
+                ),
               )
             ],
           ),
@@ -151,29 +178,32 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
-                onTap: () => _display('1'),
+                onTap: () => _keyboard('1'),
                 child: const Text(
                   '1',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('2'),
+                onTap: () => _keyboard('2'),
                 child: const Text(
                   '2',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('3'),
+                onTap: () => _keyboard('3'),
                 child: const Text(
                   '3',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
-              Text(
-                '+',
-                style: TextStyle(fontSize: 25),
+              GestureDetector(
+                onTap: () => _keyboard('+'),
+                child: const Text(
+                  '+',
+                  style: TextStyle(fontSize: 25),
+                ),
               )
             ],
           ),
@@ -185,22 +215,25 @@ class _MyAppState extends State<MyApp> {
                 style: TextStyle(fontSize: 25),
               ),
               GestureDetector(
-                onTap: () => _display('0'),
+                onTap: () => _keyboard('0'),
                 child: const Text(
                   '0',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
               GestureDetector(
-                onTap: () => _display('.'),
+                onTap: () => _keyboard('.'),
                 child: const Text(
                   ',',
                   style: TextStyle(fontSize: 25),
                 ),
               ),
-              Text(
-                '=',
-                style: TextStyle(fontSize: 25),
+              GestureDetector(
+                onTap: () => _calcular(),
+                child: const Text(
+                  '=',
+                  style: TextStyle(fontSize: 25),
+                ),
               )
             ],
           )
