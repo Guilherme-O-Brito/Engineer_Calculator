@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '';
 
 void main() {
   runApp(MyApp());
@@ -38,6 +39,15 @@ class _MyAppState extends State<MyApp> {
           i = 0;
         });
         break;
+      case '<<':
+        if(_expressao[i] == ''){
+          _expressao.removeLast();
+          _expressao.removeLast();
+          i -= 2;
+        } else {
+          _expressao[i] = _expressao[i].substring(0,_expressao[i].length-1);
+        }
+        break;  
       case '=':
         if(_resultado != null){
           _expressao = [];
@@ -248,9 +258,12 @@ class _MyAppState extends State<MyApp> {
                   style: TextStyle(fontSize: 25),
                 ),
               ),
-              Text(
-                'BACKSPACE',
-                style: TextStyle(fontSize: 25),
+              GestureDetector(
+                onTap: () => _keyboard('<<'),
+                child: const Text(
+                  'BACKSPACE',
+                  style: TextStyle(fontSize: 25),
+                ),
               ),
               Text(
                 '%',
